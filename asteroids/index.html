@@ -2,8 +2,10 @@
 <head>
   <title>Asteroids!</title>
 
+  <script type="application/javascript" src="./keymaster.js"></script>
   <script type="application/javascript" src="./moving_object.js"></script>
   <script type="application/javascript" src="./asteroid.js"></script>
+  <script type="application/javascript" src="./ship.js"></script>
   <script type="application/javascript" src="./game.js"></script>
 </head>
 <body>
@@ -13,7 +15,8 @@
     var canvas = document.getElementsByTagName("canvas")[0];
     var context = canvas.getContext("2d");
     var game = new Asteroids.Game(context);
-    game.addAsteroids(100);
+    game.bindKeyHandlers();
+    game.addAsteroids(50);
     game.start();
   </script>
 </body>
