@@ -1,7 +1,7 @@
 (function(root){
     var Asteroids = root.Asteroids = (root.Asteroids || {});
 
-    var Ship = Asteroids.Ship = function (pos, vel, img) {
+    var Ship = Asteroids.Ship = function (pos, vel, images) {
         Asteroids.MovingObject.call(
             this,
             pos,
@@ -10,7 +10,8 @@
             Ship.COLOR
         );
 
-        this.img = img;
+        this.images = images;
+        this.imgSwapCounter = 0;
         this.bulletDelay = 0;
     };
     Ship.inherits(Asteroids.MovingObject);
@@ -18,7 +19,6 @@
     Ship.RADIUS = 12;
     Ship.MAX_VELOCITY = 7;
     Ship.ACCEL_COEFFICIENT = 0.35;
-//    Ship.BULLET_DELAY = 10;    
 
     Ship.prototype.power = function (impulse) {
         this.vel[0] += impulse[0];
@@ -26,11 +26,45 @@
     };
 
     Ship.prototype.draw = function (ctx) {
-        ctx.drawImage(
-            this.img,
-            this.pos[0] - 22,
-            this.pos[1] - 20
+        var img = null;
+
+        if (this.imgSwapCounter < 10) {
+            img = this.images[0];
+        } 
+        else if (this.imgSwapCounter < 20) {
+            img = this.images[1];
+        }
+        else {
+            img = this.images[1];
+            this.imgSwapCounter -= 20;
+        }
+            
+        // ctx.drawImage(
+        //     img,
+        //     this.pos[0] - 22,
+        //     this.pos[1] - 20
+        // );
+
+        var radian = null;
+
+        if (this.vel[0] || this.vel[1]) {
+            radian = calcRadian(this.vel[0], this.vel[1]);
+        }
+        else {
+            radian = 0;
+        }
+
+
+        drawRotatedImage(
+            img,
+            this.pos[0],
+            this.pos[1],
+            radian
         );
+
+        this.imgSwapCounter++;
+
+        //test hit box
 
         // ctx.fillStyle = this.color;
         // ctx.beginPath();
@@ -45,14 +79,19 @@
         // ctx.fill();
     };
 
-    // var TO_RADIANS = Math.PI/180; 
-    // function drawRotatedImage(image, x, y, angle) { 
-    //     context.save(); 
-    //     context.translate(x, y);
-    //     context.rotate(angle * TO_RADIANS);
-    //     context.drawImage(image, -(image.width/2), -(image.height/2));
-    //     context.restore(); 
-    // }
+    var TO_RADIANS = Math.PI/180; 
+
+    function drawRotatedImage(image, x, y, radian) { 
+        context.save(); 
+        context.translate(x, y);
+        context.rotate(radian + Math.PI/2);
+        context.drawImage(image, -(image.width/2), -(image.height/2));
+        context.restore(); 
+    }
+
+    function calcRadian(x, y) { 
+        return Math.atan2(y, x);
+    }
 
     Ship.prototype.fireBullet = function () {
         if (this.vel[0] || this.vel[1]) {

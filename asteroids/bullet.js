@@ -21,14 +21,13 @@
   }
 
   Bullet.COLOR = "yellow";
-  Bullet.RADIUS = 1;
+  Bullet.RADIUS = 3;
 
   Bullet.prototype.hitAsteroids = function () {
     var asteroids = this.game.asteroids;
- //   debugger;
+
     for (var i = 0; i < asteroids.length; i++) {
       if (this.isCollidedWith(asteroids[i])) {
-        console.log("asdf");
         this.game.removeAsteroid(asteroids[i]);
         this.game.removeBullet(this);
       }

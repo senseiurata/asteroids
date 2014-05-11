@@ -5,13 +5,13 @@
         this.ctx = ctx;
         this.asteroids = [];
         this.bullets = [];
-        this.img = new Image();
-        this.loadImage();
+        this.images = [new Image(), new Image()];
+        this.loadImages();
 
         this.ship = new Asteroids.Ship(
             [Game.DIM_X / 2, Game.DIM_Y / 2],
             [0, 0],
-            this.img
+            this.images
         );
     }
 
@@ -19,17 +19,25 @@
     Game.DIM_Y = 600;
     Game.FPS = 30;
 
-    Game.prototype.loadImage = function () {
+    Game.prototype.loadImages = function () {
         var that = this;
 
-        this.img.onload = function () {
-            that.ctx.drawImage(
-                that.img,
-                this.DIM_X / 2,
-                this.DIM_Y / 2
-            );
-        };
-        this.img.src = 'starship.png'
+        for (var i = 0; i < 2; i++) {
+            (function() {
+                var new_idx = i;
+
+                that.images[new_idx].onload = function () {
+                    that.ctx.drawImage(
+                        that.images[new_idx],
+                        this.DIM_X / 2,
+                        this.DIM_Y / 2
+                    );
+                };
+            })();
+        }
+
+        this.images[0].src = 'starship.png'
+        this.images[1].src = 'starship2.png'
     }
 
     Game.prototype.addAsteroids = function (numAsteroids) {
@@ -79,7 +87,6 @@
         this.checkBounds();
         this.ship.wrap();
         this.isOutOfBounds();
-        this.loadImage(this.img, 200, 200);
     }
 
     Game.prototype.start = function () {
@@ -130,13 +137,24 @@
         }
     }
 
+    // var Key = Game.Key = function() {
+    //     _pressed = {},
+    // }
+
+    // Key.KEY_MAP = {
+    //     LEFT: 37,
+    //     UP: 38,
+    //     RIGHT: 39,
+    //     DOWN: 40
+    // }
+
     Game.prototype.bindKeyHandlers = function () {
         var $doc = $(document)
         var that = this;
 
         $doc.ready(function () {
             $doc.on('keydown', function(event) {
-                console.log("keypress");
+
                 var pressedKey = event.which;
                 var ship = that.ship;
 
@@ -160,6 +178,8 @@
             });
         });
     }
+
+
 
     Game.prototype.fireBullet = function () {
         var bullet = this.ship.fireBullet();
