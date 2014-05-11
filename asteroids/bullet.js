@@ -13,6 +13,9 @@
 
   Bullet.inherits(Asteroids.MovingObject);
 
+  // Bullet.prototype.move = function () {
+  // }
+
   Bullet.COLOR = "yellow";
   Bullet.RADIUS = 1;
 

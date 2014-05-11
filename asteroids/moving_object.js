@@ -11,7 +11,7 @@
     MovingObject.prototype.move = function () {
         this.pos[0] += this.vel[0];
         this.pos[1] += this.vel[1];
-    }
+    };
 
     MovingObject.prototype.draw = function (ctx) {
         ctx.fillStyle = this.color;

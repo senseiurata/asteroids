@@ -61,7 +61,7 @@
         this.checkCollisions();
         this.checkBounds();
         this.ship.wrap();
-        //this.fireBullet();
+        this.fireBullet();
     }
 
     Game.prototype.start = function () {
@@ -83,16 +83,16 @@
 
     Game.prototype.checkBounds = function () {
         for(var i = 0; i < this.asteroids.length; i++) {
-            // var asteroid = this.asteroids[i];
-            // if (asteroid.pos[0] < (0 - asteroid.radius) ||
-            //     asteroid.pos[1] < (0 - asteroid.radius) ||
-            //     asteroid.pos[0] > (Game.DIM_X + asteroid.radius) ||
-            //     asteroid.pos[1] > (Game.DIM_Y + asteroid.radius)
-            //    ) {
+            var asteroid = this.asteroids[i];
+            if (asteroid.pos[0] < (0 - asteroid.radius) ||
+                asteroid.pos[1] < (0 - asteroid.radius) ||
+                asteroid.pos[0] > (Game.DIM_X + asteroid.radius) ||
+                asteroid.pos[1] > (Game.DIM_Y + asteroid.radius)
+               ) {
 
-            //     this.asteroids[i] = Asteroids
-            //         .randomAsteroid(Game.DIM_X, Game.DIM_Y);
-            // }
+                this.asteroids[i] = Asteroids
+                    .randomAsteroid(Game.DIM_X, Game.DIM_Y);
+            }
             this.asteroids[i].wrap();
         }
     }
@@ -144,7 +144,7 @@
         var bullet = this.ship.fireBullet();
 
         if (bullet) {
-            this.bullets.push(this.ship.fireBullet());
+            this.bullets.push(bullet);
         }
     }
 
