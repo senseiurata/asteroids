@@ -2,9 +2,10 @@
 <head>
   <title>Asteroids!</title>
 
-  <script type="application/javascript" src="./keymaster.js"></script>
+  <script type="application/javascript" src="./jquery-1.11.1.js"></script>
   <script type="application/javascript" src="./moving_object.js"></script>
   <script type="application/javascript" src="./asteroid.js"></script>
+  <script type="application/javascript" src="./bullet.js"></script>
   <script type="application/javascript" src="./ship.js"></script>
   <script type="application/javascript" src="./game.js"></script>
 </head>
@@ -16,7 +17,7 @@
     var context = canvas.getContext("2d");
     var game = new Asteroids.Game(context);
     game.bindKeyHandlers();
-    game.addAsteroids(50);
+    game.addAsteroids(20);
     game.start();
   </script>
 </body>

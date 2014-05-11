@@ -35,6 +35,22 @@
         return collidingDistance >= distanceBetween;
     };
 
+    function wrap (coord, max) {
+        if (coord < 0) {
+            return max - (coord % max);
+        }
+        else if (coord > max) {
+            return coord % max;
+        }
+        else {
+            return coord;
+        }
+    }
+
+    MovingObject.prototype.wrap = function () {
+        this.pos[0] = wrap(this.pos[0], Asteroids.Game.DIM_X);
+        this.pos[1] = wrap(this.pos[1], Asteroids.Game.DIM_Y);
+    }
 
 })(this);
 
