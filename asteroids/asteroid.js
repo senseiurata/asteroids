@@ -15,7 +15,7 @@
     Asteroid.inherits(Asteroids.MovingObject);
 
     Asteroid.COLOR = "purple";
-    Asteroid.RADIUS = 10;
+    Asteroid.RADIUS = 20;
     Asteroid.VELOCITY = 3;
 
     Asteroids.randomAsteroid = function (dimX, dimY) {

@@ -5,15 +5,32 @@
         this.ctx = ctx;
         this.asteroids = [];
         this.bullets = [];
+        this.img = new Image();
+        this.loadImage();
+
         this.ship = new Asteroids.Ship(
             [Game.DIM_X / 2, Game.DIM_Y / 2],
-            [0, 0]
+            [0, 0],
+            this.img
         );
     }
 
-    Game.DIM_X = 400;
-    Game.DIM_Y = 400;
+    Game.DIM_X = 1000;
+    Game.DIM_Y = 600;
     Game.FPS = 30;
+
+    Game.prototype.loadImage = function () {
+        var that = this;
+
+        this.img.onload = function () {
+            that.ctx.drawImage(
+                that.img,
+                this.DIM_X / 2,
+                this.DIM_Y / 2
+            );
+        };
+        this.img.src = 'starship.png'
+    }
 
     Game.prototype.addAsteroids = function (numAsteroids) {
         for(var i = 0; i < numAsteroids; i++) {
@@ -61,7 +78,8 @@
         this.checkCollisions();
         this.checkBounds();
         this.ship.wrap();
-        this.fireBullet();
+        this.isOutOfBounds();
+        this.loadImage(this.img, 200, 200);
     }
 
     Game.prototype.start = function () {
@@ -135,6 +153,9 @@
                     case 40: //down
                         ship.power([0, computeAccel(ship.vel[1], false)]);
                         break;
+                    case 32: //spacebar
+                        that.fireBullet();
+                        break;
                 }
             });
         });
@@ -148,4 +169,32 @@
         }
     }
 
+    Game.prototype.removeAsteroid = function (asteroid) {
+        var asteroidIdx = this.asteroids.indexOf(asteroid);
+
+        if (asteroidIdx !== -1) {
+            this.asteroids.splice(asteroidIdx, 1);
+        }
+    }
+
+    Game.prototype.removeBullet = function (bullet) {
+        var bulletIdx = this.bullets.indexOf(bullet);
+
+        if (bulletIdx !== -1) {
+            this.bullets.splice(bulletIdx, 1);
+        }
+    }
+
+    Game.prototype.isOutOfBounds = function () {
+        var bullets = this.bullets
+
+        for (var i = 0; i < bullets.length; i++) {
+            var pos = bullets[i].pos;
+
+            if (pos[0] < 0 || pos[0] > Asteroids.Game.DIM_X ||
+                pos[1] < 0 || pos[1] > Asteroids.Game.DIM_Y) {
+                this.removeBullet(bullets[i]);
+            }
+        }
+    }
 })(this);
