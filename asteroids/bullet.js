@@ -22,6 +22,7 @@
 
   Bullet.COLOR = "yellow";
   Bullet.RADIUS = 3;
+  Bullet.VELOCITY = 20;
 
   Bullet.prototype.hitAsteroids = function () {
     var asteroids = this.game.asteroids;

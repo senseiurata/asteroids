@@ -87,6 +87,7 @@
         this.checkBounds();
         this.ship.wrap();
         this.isOutOfBounds();
+        this.handleKeyPresses();
     }
 
     Game.prototype.start = function () {
@@ -122,6 +123,45 @@
         }
     }
 
+    // function computeAccel(currentVel, leftOrUp) {
+    //     if(leftOrUp) {
+    //         if (Asteroids.Ship.MAX_VELOCITY + currentVel > 0) {
+    //             return -Math.sqrt(Asteroids.Ship.MAX_VELOCITY + currentVel) * Asteroids.Ship.ACCEL_COEFFICIENT;
+    //         }
+    //         return 0;
+    //     }
+    //     else {
+    //         if (Asteroids.Ship.MAX_VELOCITY - currentVel > 0) {
+    //             return Math.sqrt(Asteroids.Ship.MAX_VELOCITY - currentVel) * Asteroids.Ship.ACCEL_COEFFICIENT;
+    //         }
+    //         return 0;
+    //     }
+    // }
+
+    var Key = Game.Key = {
+        _pressed: {},
+
+        isDown: function (keyCode) {
+            return this._pressed[keyCode];
+        },
+
+        onKeyDown: function (event) {
+            this._pressed[event.which] = true;
+        },
+
+        onKeyUp: function (event) {
+            this._pressed[event.which] = false;
+        }
+    }
+
+    Key.KEY_MAP = {
+        LEFT: 37,
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40,
+        SPACE_BAR: 32
+    }
+
     function computeAccel(currentVel, leftOrUp) {
         if(leftOrUp) {
             if (Asteroids.Ship.MAX_VELOCITY + currentVel > 0) {
@@ -137,49 +177,63 @@
         }
     }
 
-    // var Key = Game.Key = function() {
-    //     _pressed = {},
-    // }
+    Game.prototype.handleKeyPresses = function () {
+        var Key = Asteroids.Game.Key;
+        var ship = this.ship;
 
-    // Key.KEY_MAP = {
-    //     LEFT: 37,
-    //     UP: 38,
-    //     RIGHT: 39,
-    //     DOWN: 40
-    // }
+        if (Key.isDown(Key.KEY_MAP.UP)) {
+            ship.power([0, computeAccel(ship.vel[1], true)]);
+        }
+        if (Key.isDown(Key.KEY_MAP.LEFT)) {
+            ship.power([computeAccel(ship.vel[0], true), 0]);
+        }
+        if (Key.isDown(Key.KEY_MAP.DOWN)) {
+            ship.power([0, computeAccel(ship.vel[1], false)]);
+        }
+        if (Key.isDown(Key.KEY_MAP.RIGHT)) {
+            ship.power([computeAccel(ship.vel[0], false), 0]);
+        }
+        if (Key.isDown(Key.KEY_MAP.SPACE_BAR)) {
+            this.fireBullet();            
+        }
+    }    
 
     Game.prototype.bindKeyHandlers = function () {
         var $doc = $(document)
         var that = this;
 
         $doc.ready(function () {
+            // $doc.on('keydown', function(event) {
+
+            //     var pressedKey = event.which;
+            //     var ship = that.ship;
+
+            //     switch(pressedKey) {
+            //         case 37: //left
+            //             ship.power([computeAccel(ship.vel[0], true), 0]);
+            //             break;
+            //         case 38: //up
+            //             ship.power([0, computeAccel(ship.vel[1], true)]);
+            //             break;
+            //         case 39: //right
+            //             ship.power([computeAccel(ship.vel[0], false), 0]);
+            //             break;
+            //         case 40: //down
+            //             ship.power([0, computeAccel(ship.vel[1], false)]);
+            //             break;
+            //         case 32: //spacebar
+            //             that.fireBullet();
+            //             break;
+            //     }
+            // });
+            $doc.on('keyup', function(event) {
+                Key.onKeyUp(event);
+            });
             $doc.on('keydown', function(event) {
-
-                var pressedKey = event.which;
-                var ship = that.ship;
-
-                switch(pressedKey) {
-                    case 37: //left
-                        ship.power([computeAccel(ship.vel[0], true), 0]);
-                        break;
-                    case 38: //up
-                        ship.power([0, computeAccel(ship.vel[1], true)]);
-                        break;
-                    case 39: //right
-                        ship.power([computeAccel(ship.vel[0], false), 0]);
-                        break;
-                    case 40: //down
-                        ship.power([0, computeAccel(ship.vel[1], false)]);
-                        break;
-                    case 32: //spacebar
-                        that.fireBullet();
-                        break;
-                }
+                Key.onKeyDown(event);
             });
         });
     }
-
-
 
     Game.prototype.fireBullet = function () {
         var bullet = this.ship.fireBullet();
@@ -217,4 +271,5 @@
             }
         }
     }
+
 })(this);
