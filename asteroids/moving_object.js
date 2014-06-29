@@ -50,7 +50,12 @@
     MovingObject.prototype.wrap = function () {
         this.pos[0] = wrap(this.pos[0], Asteroids.Game.DIM_X);
         this.pos[1] = wrap(this.pos[1], Asteroids.Game.DIM_Y);
+    },
+
+    MovingObject.prototype.calcRadian = function (x, y) { 
+        return Math.atan2(y, x);
     }
+
 
 })(this);
 

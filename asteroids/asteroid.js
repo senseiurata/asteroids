@@ -19,7 +19,8 @@
     Asteroid.VELOCITY = 3;
 
     Asteroids.randomAsteroid = function (dimX, dimY) {
-        return new Asteroid(Asteroids.randomPos(dimX, dimY),         Asteroids.randomVec());
+        return new Asteroid(Asteroids.randomPos(dimX, dimY),
+            Asteroids.randomVec());
     }
 
     Asteroids.randomPos = function (dimX, dimY) {

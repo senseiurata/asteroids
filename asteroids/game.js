@@ -23,7 +23,7 @@
         var that = this;
 
         for (var i = 0; i < 2; i++) {
-            (function() {
+            (function () {
                 var new_idx = i;
 
                 that.images[new_idx].onload = function () {
@@ -86,6 +86,7 @@
         this.checkCollisions();
         this.checkBounds();
         this.ship.wrap();
+        this.fireBullet();
         this.isOutOfBounds();
         this.handleKeyPresses();
     }
@@ -194,7 +195,7 @@
             ship.power([computeAccel(ship.vel[0], false), 0]);
         }
         if (Key.isDown(Key.KEY_MAP.SPACE_BAR)) {
-            this.fireBullet();            
+            ship.pendingFireBullet = true;            
         }
     }    
 
@@ -203,29 +204,6 @@
         var that = this;
 
         $doc.ready(function () {
-            // $doc.on('keydown', function(event) {
-
-            //     var pressedKey = event.which;
-            //     var ship = that.ship;
-
-            //     switch(pressedKey) {
-            //         case 37: //left
-            //             ship.power([computeAccel(ship.vel[0], true), 0]);
-            //             break;
-            //         case 38: //up
-            //             ship.power([0, computeAccel(ship.vel[1], true)]);
-            //             break;
-            //         case 39: //right
-            //             ship.power([computeAccel(ship.vel[0], false), 0]);
-            //             break;
-            //         case 40: //down
-            //             ship.power([0, computeAccel(ship.vel[1], false)]);
-            //             break;
-            //         case 32: //spacebar
-            //             that.fireBullet();
-            //             break;
-            //     }
-            // });
             $doc.on('keyup', function(event) {
                 Key.onKeyUp(event);
             });
@@ -239,7 +217,7 @@
         var bullet = this.ship.fireBullet();
 
         if (bullet) {
-            this.bullets.push(bullet);
+            this.bullets = this.bullets.concat(bullet);
         }
     }
 

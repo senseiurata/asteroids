@@ -13,12 +13,16 @@
         this.images = images;
         this.imgSwapCounter = 0;
         this.bulletDelay = 0;
+        this.pendingFireBullet = false;
     };
+
     Ship.inherits(Asteroids.MovingObject);
+
     Ship.COLOR = "pink";
     Ship.RADIUS = 12;
     Ship.MAX_VELOCITY = 10;
     Ship.ACCEL_COEFFICIENT = 0.35;
+    Ship.BULLET_COOLDOWN = 7;
 
     Ship.prototype.power = function (impulse) {
         this.vel[0] += impulse[0];
@@ -48,7 +52,7 @@
         var radian = null;
 
         if (this.vel[0] || this.vel[1]) {
-            radian = calcRadian(this.vel[0], this.vel[1]);
+            radian = this.calcRadian(this.vel[0], this.vel[1]);
         }
         else {
             radian = 0;
@@ -79,8 +83,6 @@
         // ctx.fill();
     };
 
-    var TO_RADIANS = Math.PI/180; 
-
     function drawRotatedImage(image, x, y, radian) { 
         context.save(); 
         context.translate(x, y);
@@ -89,33 +91,52 @@
         context.restore(); 
     }
 
-    function calcRadian(x, y) { 
-        return Math.atan2(y, x);
-    }
-
     Ship.prototype.fireBullet = function () {
         if (this.vel[0] || this.vel[1]) {
-            var bulletVel = 
-                [Asteroids.Bullet.VELOCITY * this.vel[0] / 
-                 Math.sqrt(Math.pow(this.vel[0], 2) +
-                 Math.pow(this.vel[1], 2)),
-                 Asteroids.Bullet.VELOCITY * this.vel[1] /
-                 Math.sqrt(Math.pow(this.vel[0], 2) +
-                 Math.pow(this.vel[1], 2))
-            ];
 
-            // if (this.bulletDelay > Ship.BULLET_DELAY) {
-            //     this.bulletDelay -= Ship.BULLET_DELAY;
+            this.bulletDelay += 1;
 
-                return new Asteroids.Bullet(
-                    this.pos.slice(),
-                    bulletVel,
-                    game
-                );
-            // }
-            // this.bulletDelay += 1;
+            if (this.pendingFireBullet && 
+                this.bulletDelay >= Ship.BULLET_COOLDOWN) {
+
+                this.bulletDelay = 0;
+                this.pendingFireBullet = false;
+
+                var bulletVel = Asteroids.Bullet.calcVel(this.vel); 
+
+                var newPos = this.pos.slice();
+
+                // Single bullet
+                // return [new Asteroids.Bullet(
+                //     newPos,
+                //     bulletVel,
+                //     game
+                // )];
+
+                var radian = this.calcRadian(this.vel[0], this.vel[1]);
+                
+                return [
+                    (new Asteroids.Bullet(
+                        [newPos[0] + 15 * Math.sin(radian), newPos[1] - 15 * Math.cos(radian)],
+                        bulletVel,
+                        game
+                        )
+                    ),
+                    (new Asteroids.Bullet(
+                        [newPos[0] - 15 * Math.sin(radian), newPos[1] + 15 * Math.cos(radian)],
+                        bulletVel,
+                        game
+                        )
+                    )
+                ];
+            }
+            else {
+                this.pendingFireBullet = false;
+            }
+
         }
         return null;
     }
+
 
 })(this);
